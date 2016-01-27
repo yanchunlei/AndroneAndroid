@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/toolbar"
+    tools:context=".ui.MainActivity">
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24dp"
+        android:text="Rotate"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_toEndOf="@+id/textView2"
+        android:id="@+id/textView3"
+        android:layout_alignTop="@+id/main_heightRotate"
+        android:layout_alignParentBottom="true" />
+
+    <com.jmedeisis.bugstick.Joystick
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/joystick_back"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/main_heightRotate">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/stick"/>
+    </com.jmedeisis.bugstick.Joystick>
+
+    <com.jmedeisis.bugstick.Joystick
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/joystick_back"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/main_move">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/stick"/>
+    </com.jmedeisis.bugstick.Joystick>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24dp"
+        android:text="Height"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="16dp"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:id="@+id/textView2"
+        android:layout_above="@+id/textView3"
+        android:layout_alignRight="@+id/main_heightRotate"
+        android:layout_alignEnd="@+id/main_heightRotate"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24dp"
+        android:text="Move"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:id="@+id/textView4"
+        android:layout_above="@+id/textView3"
+        android:layout_alignLeft="@+id/main_move"
+        android:layout_alignStart="@+id/main_move"
+        android:layout_alignRight="@+id/main_move"
+        android:layout_alignEnd="@+id/main_move" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24dp"
+        android:text="X : 0\nY : 0\nZ : 0"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:id="@+id/main_angle"
+        android:layout_alignRight="@+id/textView4"
+        android:layout_alignEnd="@+id/textView4"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="accelerometer"
+        android:id="@+id/main_autoMove"
+        android:background="@drawable/accelecrator_selector"
+        android:textColor="@android:color/white"
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_toLeftOf="@+id/textView4"
+        android:layout_toStartOf="@+id/textView4" />
+
+</RelativeLayout>
