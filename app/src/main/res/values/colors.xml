@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#D84315</color>
-    <color name="colorPrimaryDark">#D84315</color>
-    <color name="colorAccent">#D84315</color>
-    <color name="toolbar">#D84315</color>
-    <color name="joystick_back">#FF5722</color>
-    <color name="accelerator_selected">#0D47A1</color>
+    <color name="colorPrimary">#004D40</color>
+    <color name="colorPrimaryDark">#004D40</color>
+    <color name="colorAccent">#004D40</color>
+    <color name="toolbar">#004D40</color>
+    <color name="joystick_back">#1A237E</color>
+    <color name="accelerator_selected">#F44336</color>
     <color name="accelerator_not_selected">#00695C</color>
 </resources>

@@ -1,15 +1,11 @@
 package com.sandstormweb.droneone.ui;
 
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.Image;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jmedeisis.bugstick.Joystick;
+import com.jmedeisis.bugstick.JoystickListener;
 import com.sandstormweb.droneone.R;
+import com.sandstormweb.droneone.service.DroneBluetoothService;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -27,6 +25,13 @@ public class MainActivity extends AppCompatActivity
     private TextView angles;
     private boolean isFirstAngle = true;
     private double initRoll, initLoop;
+    private double roll, loop;
+    private double[] gravity = {0, 0, 0};
+    private int fiveToGravity = 0;
+
+    private final double COEFFICIENT = 0.8;
+
+    private DroneBluetoothService bluetoothService;
 
     private double test;
 
@@ -34,15 +39,9 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onSensorChanged(SensorEvent event) {
             try {
-                if (isFirstAngle) {
-                    initRoll = Math.toDegrees(Math.atan((event.values[1]) / (event.values[2])));
-                    initLoop = -1 * Math.toDegrees(Math.atan((event.values[0]) / (event.values[2])));
-                    isFirstAngle = false;
-                } else {
-                    double loopAngle = -1 * Math.toDegrees(Math.atan((event.values[0]) / (event.values[2]))) - initLoop;
-                    double rollAngle = Math.toDegrees(Math.atan((event.values[1]) / (event.values[2]))) - initRoll;
-                    sendCommands(loopAngle, 0, rollAngle, 0);
-                }
+                updateGravity(event.values[0], event.values[1], event.values[2]);
+                updateRollAndLoopLPS();
+                showAnglesAverage(15);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -62,6 +61,8 @@ public class MainActivity extends AppCompatActivity
 
             initializeComponents();
 
+            initializeBluetooth();
+
             initializeAutoMove();
         }catch (Exception e){
             e.printStackTrace();
@@ -80,9 +81,69 @@ public class MainActivity extends AppCompatActivity
             bluetooth.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    goToBluetoothSettings();
+                    startBluetoothConnection();
                 }
             });
+            heightRotate.setJoystickListener(new JoystickListener() {
+                @Override
+                public void onDown() {
+
+                }
+
+                @Override
+                public void onDrag(float v, float v1) {
+                    if (v > 0 && v < 90) {
+                        if (bluetoothService.isConnected()) {
+                            bluetoothService.writeString("1" + Integer.toString((int) (v1 * 255)) + "#");
+                            angles.setText("1" + Integer.toString((int) (v1 * 255)) + "#");
+                        }
+                    } else if (v > 90 && v < 180) {
+                        if (bluetoothService.isConnected()) {
+                            bluetoothService.writeString("2" + Integer.toString((int) (v1 * 255)) + "#");
+                            angles.setText("2" + Integer.toString((int) (v1 * 255)) + "#");
+                        }
+                    } else if (v < 0 && v > -90) {
+                        if (bluetoothService.isConnected()) {
+                            bluetoothService.writeString("4" + Integer.toString((int) (v1 * 255)) + "#");
+                            angles.setText("4" + Integer.toString((int) (v1 * 255)) + "#");
+                        }
+                    } else if (v < -90 && v > -180) {
+                        if (bluetoothService.isConnected()) {
+                            bluetoothService.writeString("3" + Integer.toString((int) (v1 * 255)) + "#");
+                            angles.setText("3" + Integer.toString((int) (v1 * 255)) + "#");
+                        }
+                    }
+                }
+
+                @Override
+                public void onUp() {
+                    try {
+                        if (bluetoothService.isConnected()) bluetoothService.writeString("a");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void initializeBluetooth()
+    {
+        try{
+            bluetoothService = new DroneBluetoothService(MainActivity.this);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void startBluetoothConnection()
+    {
+        try{
+            if(bluetoothService.initializeBluetooth()) {
+                bluetoothService.connectToDrone();
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -120,9 +181,10 @@ public class MainActivity extends AppCompatActivity
             Sensor accelerometer = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
             if(autoMove) {
-                sm.registerListener(sensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+                sm.registerListener(sensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
             }else{
                 isFirstAngle = true;
+                fiveToGravity = 0;
                 sm.unregisterListener(sensorEventListener, accelerometer);
             }
         }catch (Exception e){
@@ -149,12 +211,74 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void goToBluetoothSettings()
+    private void updateRollAndLoop(SensorEvent event){
+        try{
+            if (isFirstAngle) {
+                initRoll = Math.toDegrees(Math.atan((event.values[1]) / (event.values[2])));
+                initLoop = -1 * Math.toDegrees(Math.atan((event.values[0]) / (event.values[2])));
+                isFirstAngle = false;
+            } else {
+                loop = -1 * Math.toDegrees(Math.atan((event.values[0]) / (event.values[2]))) - initLoop;
+                roll = Math.toDegrees(Math.atan((event.values[1]) / (event.values[2]))) - initRoll;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private double tmpLoop, tmpRoll, counter;
+    private void showAnglesAverage(int countToShow){
+        try{
+            if(counter == countToShow-1) {
+                sendCommands(tmpLoop/16, 0, tmpRoll/countToShow, 0);
+                counter = 0;
+                tmpRoll = 0;
+                tmpLoop = 0;
+            }else{
+                tmpLoop += this.loop;
+                tmpRoll += this.roll;
+                counter++;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void updateGravity(double gx, double gy, double gz)
     {
         try{
-            Intent i = new Intent(Settings.ACTION_BLUETOOTH_SETTINGS);
-            startActivity(i);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            gravity[0] = COEFFICIENT * gravity[0] + (1-COEFFICIENT) * gx;
+            gravity[1] = COEFFICIENT * gravity[1] + (1-COEFFICIENT) * gy;
+            gravity[2] = COEFFICIENT * gravity[2] + (1-COEFFICIENT) * gz;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void updateRollAndLoopLPS()
+    {
+        try{
+            try{
+                if (fiveToGravity < 5) {
+                    initRoll = Math.toDegrees(Math.atan((gravity[1]) / (gravity[2])));
+                    initLoop = -1 * Math.toDegrees(Math.atan((gravity[0]) / (gravity[2])));
+                    fiveToGravity++;
+                } else {
+                    loop = -1 * Math.toDegrees(Math.atan((gravity[0]) / (gravity[2]))) - initLoop;
+                    roll = Math.toDegrees(Math.atan((gravity[1]) / (gravity[2]))) - initRoll;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void showAngle()
+    {
+        try{
+            sendCommands(this.loop, 0, this.roll, 0);
         }catch (Exception e){
             e.printStackTrace();
         }
