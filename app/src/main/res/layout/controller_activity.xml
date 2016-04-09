@@ -4,7 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/toolbar"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.Controller">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/controller_imageview"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -18,7 +23,7 @@
         android:layout_toRightOf="@+id/textView2"
         android:layout_toEndOf="@+id/textView2"
         android:id="@+id/textView3"
-        android:layout_alignTop="@+id/main_heightRotate"
+        android:layout_alignTop="@+id/controller_heightRotate"
         android:layout_alignParentBottom="true" />
 
     <com.jmedeisis.bugstick.Joystick
@@ -29,7 +34,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/main_heightRotate">
+        android:id="@+id/controller_heightRotate">
 
         <ImageView
             android:layout_width="50dp"
@@ -45,7 +50,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/main_move">
+        android:id="@+id/controller_move">
 
         <ImageView
             android:layout_width="50dp"
@@ -64,8 +69,8 @@
         android:gravity="center"
         android:id="@+id/textView2"
         android:layout_above="@+id/textView3"
-        android:layout_alignRight="@+id/main_heightRotate"
-        android:layout_alignEnd="@+id/main_heightRotate"
+        android:layout_alignRight="@+id/controller_heightRotate"
+        android:layout_alignEnd="@+id/controller_heightRotate"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -77,11 +82,12 @@
         android:textColor="@android:color/white"
         android:gravity="center"
         android:id="@+id/textView4"
+        android:layout_marginBottom="5dp"
         android:layout_above="@+id/textView3"
-        android:layout_alignLeft="@+id/main_move"
-        android:layout_alignStart="@+id/main_move"
-        android:layout_alignRight="@+id/main_move"
-        android:layout_alignEnd="@+id/main_move" />
+        android:layout_alignLeft="@+id/controller_move"
+        android:layout_alignStart="@+id/controller_move"
+        android:layout_alignRight="@+id/controller_move"
+        android:layout_alignEnd="@+id/controller_move" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -90,7 +96,7 @@
         android:text="X : 0\nY : 0\nZ : 0"
         android:textColor="@android:color/white"
         android:gravity="center"
-        android:id="@+id/main_angle"
+        android:id="@+id/controller_angle"
         android:layout_alignParentTop="true"
         android:layout_alignLeft="@+id/textView2"
         android:layout_alignStart="@+id/textView2" />
@@ -99,7 +105,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="auto move"
-        android:id="@+id/main_autoMove"
+        android:id="@+id/controller_autoMove"
         android:background="@drawable/accelecrator_selector"
         android:textColor="@android:color/white"
         android:layout_alignBottom="@+id/textView3"
@@ -112,8 +118,8 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_margin="16dp"
-        android:id="@+id/main_bluetooth"
-        android:background="@drawable/bluetooth_selector"
+        android:id="@+id/controller_bluetooth"
+        android:background="@drawable/drone_icon_selector"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
@@ -122,11 +128,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="not connected"
+        android:id="@+id/controller_connection_status"
         android:gravity="center_vertical"
         android:textColor="@android:color/white"
-        android:layout_alignBottom="@+id/main_bluetooth"
-        android:layout_toLeftOf="@+id/main_bluetooth"
-        android:layout_toStartOf="@+id/main_bluetooth"
-        android:layout_alignTop="@+id/main_bluetooth" />
+        android:layout_alignBottom="@+id/controller_bluetooth"
+        android:layout_toLeftOf="@+id/controller_bluetooth"
+        android:layout_toStartOf="@+id/controller_bluetooth"
+        android:layout_alignTop="@+id/controller_bluetooth" />
+
+    <SurfaceView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/controller_surfaceview"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

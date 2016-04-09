@@ -34,7 +34,7 @@ public class intro extends AppCompatActivity
                             public void run() {
                                 try{
                                     finish();
-                                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                    startActivity(new Intent(getApplicationContext(), Controller.class));
                                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                                 }catch (Exception e){
                                     e.printStackTrace();
